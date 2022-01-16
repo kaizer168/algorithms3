@@ -1,0 +1,33 @@
+class Solution {
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>> res;
+        vector<int> cur;
+        vector<bool> used(nums.size(), false);
+        sort(nums.begin(), nums.end());
+        res = {};
+        cur = {};
+        dfs(res, cur, nums, used);
+        return res;
+    }
+
+    void dfs(vector<vector<int>>& res, vector<int>& cur, vector<int>& nums, vector<bool>& used) {
+        if (cur.size() == nums.size()) {
+            res.push_back(cur);
+        }
+
+        for (int i = 0; i < nums.size(); i++) {
+            if (used[i] == true) {
+                continue;
+            }
+            if (i > 0 && nums[i] == nums[i - 1] && used[i - 1] != true) {
+                continue;
+            }
+            cur.push_back(nums[i]);
+            used[i] = true;
+            dfs(res, cur, nums, used);
+            cur.pop_back();
+            used[i] = false;
+        }  
+    }
+};
