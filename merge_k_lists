@@ -1,0 +1,89 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        if (lists.size() == 0) {
+            return NULL;
+        }
+        int n = lists.size();
+        return divideAndConquer(0, n - 1, lists);
+    }
+
+    ListNode* divideAndConquer(int start, int end, vector<ListNode*>& lists) {
+        if (start == end) {
+            return lists[start];
+        }
+
+        int mid = ((end - start) / 2) + start;
+        ListNode* left_list = divideAndConquer(start, mid, lists);
+        ListNode* right_list = divideAndConquer(mid + 1, end, lists);
+        return mergeTwoList(left_list, right_list);
+    }
+
+    ListNode* mergeTwoList(ListNode* n1, ListNode* n2) {
+    ListNode* n1_curr = n1;
+    ListNode* n2_curr = n2;
+    ListNode* merged_head = NULL;
+    ListNode* merged_curr = NULL;
+
+    if (n1 == NULL && n2 != NULL) {
+        merged_head = n2;
+        return merged_head;
+    }
+
+    if (n1 != NULL && n2 == NULL) {
+        merged_head = n1;
+        return merged_head;
+    }
+
+    if (n1 == NULL && n2 == NULL) {
+        merged_head = NULL;
+        return merged_head;
+    }
+
+    while (n1_curr != NULL && n2_curr != NULL) {
+      if (n1_curr->val < n2_curr->val) {
+        if (merged_head == NULL)
+        {
+            merged_head = n1_curr;
+            merged_curr = n1_curr;
+        }
+        else {
+            merged_curr->next = n1_curr;
+            merged_curr = merged_curr->next;
+        }
+        n1_curr = n1_curr->next;
+      }
+      else if (n2_curr->val <= n1_curr->val) {
+        if (merged_head == NULL)
+        {
+            merged_head = n2_curr;
+            merged_curr = n2_curr;
+        }
+        else {
+            merged_curr->next = n2_curr;
+            merged_curr = merged_curr->next;
+        }
+        n2_curr = n2_curr->next;
+      }
+    }
+
+    if (n1_curr == NULL && n2_curr != NULL) {
+        merged_curr->next = n2_curr;
+    }
+    else if (n2_curr == NULL && n1_curr != NULL) {
+        merged_curr->next = n1_curr;
+    }
+
+    return merged_head;
+    }
+};
